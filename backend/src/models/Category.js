@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-const User = require('./User');
+const User = require('./User')
 
-const Wallet = sequelize.define('Wallet', {
+const Category = sequelize.define('Category', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -13,13 +13,13 @@ const Wallet = sequelize.define('Wallet', {
         allowNull: false,
         defaultValue: 'Cash Wallet'
     },
-    balance: {
-        type: DataTypes.FLOAT,
-        defaultValue: 0,
+    type: {
+        type: DataTypes.ENUM('income', 'expense'),
+        allowNull: false
     },
-    currency: {
+    description: {
         type: DataTypes.STRING,
-        defaultValue: 'INR',
+        allowNull: false
     },
     userId: {
         type: DataTypes.INTEGER,
@@ -27,15 +27,10 @@ const Wallet = sequelize.define('Wallet', {
             model: User,
             key: 'id'
         },
-        allowNull: false
+        allowNull: true
     }
 }, { timestamps: true });
 
-const Budget = require('./Budget');
-const Collaborators = require('./Collaborators');
 const Transaction = require('./Transaction');
-Wallet.hasMany(Budget, { foreignKey: 'wallet', as: 'budgets' });
-Wallet.hasMany(Collaborators, { foreignKey: 'walletId' });
-Wallet.hasMany(Transaction, { foreignKey: 'walletId' });
-
-module.exports = Wallet;
+Category.hasMany(Transaction, { foreignKey: 'categoryId' });
+module.exports = Category;
