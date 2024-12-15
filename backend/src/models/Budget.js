@@ -48,7 +48,4 @@ const Budget = sequelize.define('Budget', {
     }
 }, { timestamps: true });
 
-Budget.belongsTo(Wallet, { foreignKey: 'wallet', as: 'walletDetails' });
-Budget.belongsTo(User, { foreignKey: 'userId', as: 'userDetails' });
-
 module.exports = Budget;

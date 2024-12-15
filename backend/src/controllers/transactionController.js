@@ -1,8 +1,5 @@
 const { Op } = require('sequelize');
-const Transaction = require('../models/Transaction');
-const Wallet = require('../models/Wallet');
-const Category = require('../models/Category');
-const User = require('../models/User');
+const {User, Transactions, Wallet, Category} = require('../models');
 
 // Create a new transaction
 const createTransaction = async (req, res) => {
@@ -32,7 +29,7 @@ const createTransaction = async (req, res) => {
             return res.status(400).json({ message: 'Invalid transfer wallets.' });
         }
 
-        const newTransaction = await Transaction.create({
+        const newTransaction = await Transactions.create({
             type,
             amount,
             category,
@@ -62,7 +59,7 @@ const createTransaction = async (req, res) => {
 // Get all transactions
 const getTransactions = async (req, res) => {
     try {
-        const transactions = await Transaction.findAll({
+        const transactions = await Transactions.findAll({
             include: [
                 { model: Wallet, as: 'walletDetails' },
                 { model: Category, as: 'categoryDetails' },
@@ -70,6 +67,7 @@ const getTransactions = async (req, res) => {
             ],
             order: [['date', 'DESC']],
         });
+        console.log("working");
 
         return res.status(200).json({
             message: 'Transactions retrieved successfully',
@@ -86,7 +84,7 @@ const getTransactionById = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const transaction = await Transaction.findByPk(id, {
+        const transaction = await Transactions.findByPk(id, {
             include: [
                 { model: Wallet, as: 'walletDetails' },
                 { model: Category, as: 'categoryDetails' },
@@ -112,7 +110,7 @@ const getTransactionsByWallet = async (req, res) => {
     try {
         const { walletId } = req.params;
 
-        const transactions = await Transaction.findAll({
+        const transactions = await Transactions.findAll({
             where: { wallet: walletId },
             include: [
                 { model: Wallet, as: 'walletDetails' },
@@ -142,7 +140,7 @@ const getTransactionsByPeriod = async (req, res) => {
             });
         }
 
-        const transactions = await Transaction.findAll({
+        const transactions = await Transactions.findAll({
             where: {
                 date: {
                     [Op.between]: [new Date(startDate), new Date(endDate)],
@@ -170,13 +168,13 @@ const updateTransaction = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const transaction = await Transaction.findByPk(id);
+        const transaction = await Transactions.findByPk(id);
         if (!transaction) {
             return res.status(404).json({ message: 'Transaction not found' });
         }
 
         const updatedData = req.body;
-        await transaction.update(updatedData);
+        await Transactions.update(updatedData);
 
         return res.status(200).json({
             message: 'Transaction updated successfully',
@@ -193,12 +191,12 @@ const deleteTransaction = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const transaction = await Transaction.findByPk(id);
+        const transaction = await Transactions.findByPk(id);
         if (!transaction) {
             return res.status(404).json({ message: 'Transaction not found' });
         }
 
-        await transaction.destroy();
+        await Transactions.destroy();
 
         return res.status(200).json({ message: 'Transaction deleted successfully' });
     } catch (error) {
@@ -210,7 +208,7 @@ const deleteTransaction = async (req, res) => {
 // Get recurring transactions
 const getRecurringTransactions = async (req, res) => {
     try {
-        const recurringTransactions = await Transaction.findAll({
+        const recurringTransactions = await Transactions.findAll({
             where: {
                 isRecurring: true,
             },

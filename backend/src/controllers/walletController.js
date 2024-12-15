@@ -1,4 +1,4 @@
-const Wallet = require('../models/Wallet');
+const {Wallet} = require('../models');
 
 const createWallet = async (req, res) => {
     const { name, balance, currency, userId } = req.body;

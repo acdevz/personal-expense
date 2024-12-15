@@ -1,40 +1,37 @@
 const { Op } = require('sequelize');
-const Transaction = require('../models/Transaction');
-const Wallet = require('../models/Wallet');
-const Category = require('../models/Category');
-const Activity = require('../models/Activity');
+const {Transactions, Wallet, Category, Activity} = require('../models');
 
 const getTransactionStats = async (req, res) => {
     try {
         const { userId } = req.params;
 
         // 1. Total income, expense, and balance
-        const income = await Transaction.sum('amount', { where: { userId, type: 'income' } });
-        const expense = await Transaction.sum('amount', { where: { userId, type: 'expense' } });
+        const income = await Transactions.sum('amount', { where: { userId, type: 'income' } });
+        const expense = await Transactions.sum('amount', { where: { userId, type: 'expense' } });
         const balance = (income || 0) - (expense || 0);
 
         // 2. Transactions by Wallet
-        const transactionsByWallet = await Transaction.findAll({
-            attributes: ['wallet', [Transaction.sequelize.fn('SUM', Transaction.sequelize.col('amount')), 'totalAmount']],
+        const transactionsByWallet = await Transactions.findAll({
+            attributes: ['wallet', [Transactions.sequelize.fn('SUM', Transactions.sequelize.col('amount')), 'totalAmount']],
             where: { userId, type: 'expense' },
             group: ['wallet'],
             include: [{ model: Wallet, as: 'walletDetails', attributes: ['name'] }],
         });
 
         // 3. Transactions by Category
-        const transactionsByCategory = await Transaction.findAll({
-            attributes: ['category', [Transaction.sequelize.fn('SUM', Transaction.sequelize.col('amount')), 'totalAmount']],
+        const transactionsByCategory = await Transactions.findAll({
+            attributes: ['category', [Transactions.sequelize.fn('SUM', Transactions.sequelize.col('amount')), 'totalAmount']],
             where: { userId, type: 'expense' },
             group: ['category'],
             include: [{ model: Category, as: 'categoryDetails', attributes: ['name'] }],
         });
 
         // 4. Monthly Income and Expense Summary
-        const monthlySummary = await Transaction.findAll({
+        const monthlySummary = await Transactions.findAll({
             attributes: [
-                [Transaction.sequelize.fn('DATE_FORMAT', Transaction.sequelize.col('date'), '%Y-%m'), 'month'],
+                [Transactions.sequelize.fn('DATE_FORMAT', Transactions.sequelize.col('date'), '%Y-%m'), 'month'],
                 'type',
-                [Transaction.sequelize.fn('SUM', Transaction.sequelize.col('amount')), 'totalAmount'],
+                [Transactions.sequelize.fn('SUM', Transactions.sequelize.col('amount')), 'totalAmount'],
             ],
             where: { userId },
             group: ['month', 'type'],

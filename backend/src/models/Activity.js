@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 const User = require('./User');
-const Transaction = require('./Transaction')
+const Transactions = require('./Transactions')
 
 const Activity = sequelize.define('Activity', {
     id: {
@@ -35,14 +35,11 @@ const Activity = sequelize.define('Activity', {
     transactionId: {
         type: DataTypes.INTEGER,
         references:{
-            model: Transaction,
+            model: Transactions,
             key: 'id'
         },
         allowNull: true
     },
 }, { timestamps: true });
-
-Activity.belongsTo(User, { foreignKey: 'userId', as: 'user' });
-Activity.belongsTo(Transaction, { foreignKey: 'transactionId', as: 'transaction' });
 
 module.exports = Activity;

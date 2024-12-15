@@ -1,6 +1,4 @@
-const Activity = require('../models/Activity');
-const User = require('../models/User');
-const Transaction = require('../models/Transaction');
+const {Activity} = require('../models');
 
 const createActivity = async (req, res) => {
     try {

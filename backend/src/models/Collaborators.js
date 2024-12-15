@@ -25,7 +25,4 @@ const Collaborators = sequelize.define('Collaborators', {
     }
 });
 
-Collaborators.belongsTo(Wallet, { foreignKey: 'walletId' });
-Collaborators.belongsTo(User, { foreignKey: 'userId' });
-
 module.exports = Collaborators;

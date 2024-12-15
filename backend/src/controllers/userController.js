@@ -1,6 +1,7 @@
-const User = require('../models/User');
+const {User} = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { singularize } = require('sequelize/lib/utils');
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRY = process.env.JWT_EXPIRY;
 
@@ -85,4 +86,21 @@ const signin = async (req, res) => {
     }
 };
 
-module.exports = { signup, signin };
+const signout = async (req, res) => {
+    try {
+        res.clearCookie('auth_token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        });
+
+        res.status(200).json({ message: 'Sign out successful' });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+module.exports = { signup, signin, signout };

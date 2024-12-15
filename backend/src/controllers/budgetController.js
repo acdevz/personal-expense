@@ -1,8 +1,5 @@
 const { Op } = require('sequelize');
-const Budget = require('../models/Budget');
-const Wallet = require('../models/Wallet');
-const Transaction = require('../models/Transaction'); // Import Transaction model
-const User = require('../models/User');
+const {Budget, Wallet, Transactions, User} = require('../models');
 
 const createBudget = async (req, res) => {
     try {
@@ -56,7 +53,7 @@ const getBudgets = async (req, res) => {
 
         const budgetsWithAmountUsed = await Promise.all(
             budgets.map(async (budget) => {
-                const transactions = await Transaction.sum('amount', {
+                const transactions = await Transactions.sum('amount', {
                     where: {
                         walletId: budget.wallet, // Link wallet
                         date: {
@@ -99,7 +96,7 @@ const getBudget = async (req, res) => {
             return res.status(404).json({ message: 'Budget not found' });
         }
 
-        const amountUsed = await Transaction.sum('amount', {
+        const amountUsed = await Transactions.sum('amount', {
             where: {
                 walletId: budget.wallet,
                 date: {

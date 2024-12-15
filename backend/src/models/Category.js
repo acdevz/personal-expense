@@ -31,6 +31,4 @@ const Category = sequelize.define('Category', {
     }
 }, { timestamps: true });
 
-const Transaction = require('./Transaction');
-Category.hasMany(Transaction, { foreignKey: 'categoryId' });
 module.exports = Category;

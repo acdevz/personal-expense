@@ -31,11 +31,4 @@ const Wallet = sequelize.define('Wallet', {
     }
 }, { timestamps: true });
 
-const Budget = require('./Budget');
-const Collaborators = require('./Collaborators');
-const Transaction = require('./Transaction');
-Wallet.hasMany(Budget, { foreignKey: 'wallet', as: 'budgets' });
-Wallet.hasMany(Collaborators, { foreignKey: 'walletId' });
-Wallet.hasMany(Transaction, { foreignKey: 'walletId' });
-
 module.exports = Wallet;

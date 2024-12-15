@@ -3,7 +3,7 @@ const { createWallet, getWallets, getWallet } = require('../controllers/walletCo
 const authenticateToken = require('../middlewares/authMiddleware');
 const router = express.Router();
 
-// router.use(authenticateToken);
+router.use(authenticateToken);
 router.post('/', createWallet);
 router.get('/', getWallets);
 router.get('/:id', getWallet);

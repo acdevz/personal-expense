@@ -1,10 +1,10 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../../config/db');
+const sequelize = require('../config/db');
 const Wallet = require('./Wallet');
 const Category = require('./Category');
 const User = require('./User')
 
-const Transaction = sequelize.define('Transaction', {
+const Transactions = sequelize.define('Transactions', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -77,12 +77,4 @@ const Transaction = sequelize.define('Transaction', {
     }
 }, { timestamps: true });
 
-const Activity = require('./Activity');
-Transaction.belongsTo(Wallet, { foreignKey: 'wallet', as: 'walletDetails' });
-Transaction.belongsTo(Wallet, { foreignKey: 'transferFrom', as: 'transferFromDetails' });
-Transaction.belongsTo(Wallet, { foreignKey: 'transferTo', as: 'transferToDetails' });
-Transaction.belongsTo(Category, { foreignKey: 'category', as: 'categoryDetails' });
-Transaction.belongsTo(User, { foreignKey: 'userId', as: 'userDetails' });
-Transaction.hasMany(Activity, { foreignKey: 'transactionId', as: 'activities' });
-
-module.exports = Transaction;
+module.exports = Transactions;

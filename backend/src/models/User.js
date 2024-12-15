@@ -21,13 +21,4 @@ const User = sequelize.define('User', {
     }
 }, { timestamps: true });
 
-const Budget = require('./Budget');
-const Collaborators = require('./Collaborators');
-const Transaction = require('./Transaction');
-const Activity = require('./Activity');
-User.hasMany(Budget, { foreignKey: 'userId', as: 'budgets' });
-User.hasMany(Collaborators, { foreignKey: 'userId' });
-User.hasMany(Transaction, { foreignKey: 'userId' });
-User.hasMany(Activity, { foreignKey: 'userId', as: 'activities' });
-
 module.exports = User;
